@@ -19,14 +19,15 @@ import javax.sql.DataSource;
  * @Author by 尘心
  */
 @EnableWebSecurity
+@org.springframework.context.annotation.PropertySource("classpath:runtime.properties")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 
     @Autowired
     private UserService userService;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+@Override
+protected void configure(HttpSecurity http) throws Exception {
         //授权
         http.formLogin()
                 //自定义登陆页面
@@ -37,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 //请求授权
                 .authorizeRequests()
+                .requestMatchers(org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest.toAnyEndpoint().excluding("caches")).permitAll()
                 //在访问我们的URL时，我们是不需要省份认证，可以立即访问
                 .antMatchers("/javaex/**","/","/favicon.ico","/login","/user/login").permitAll()
                 //所有请求都被拦截，都需认证
